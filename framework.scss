@@ -1,0 +1,29 @@
+// Import dependent utilities
+// ------------------------------
+@import 'exponents';
+
+
+// Import components
+// ------------------------------
+@import 'scale';
+
+
+
+
+// Scale module tests
+// ------------------------------
+
+.testclass {
+  @include scale{
+    padding: es(1);
+  };
+}
+
+.exampleclass {
+  padding: es(3); //3rd increase on the exponentional scale(non-responsive)
+  @include scale() { //initiate responsive scale for the contained properties
+    margin: es(0); //base value from the exponential scale
+    line-height: ls(1.2 2); //linear interpolation of value
+    left: es(1) + 5rem; //add first increase of exponential scale to constant value
+  }
+}
