@@ -1,0 +1,40 @@
+//Color palette generator
+//Requires a $color-palettes variable in this format:
+/*
+$color-palettes: (
+  light: (fg: #333, bg: #f8f8f8, accent: #ba9f61, fg-subtle: #808080, bg-subtle: #e5e5e5),
+  dark: (fg: #f8f8f8, bg: #333, accent: #ba9f61, fg-subtle: #ccc, bg-subtle: #808080 ),
+  accent: (fg: #f8f8f8, bg: #ba9f61, accent: #333, fg-subtle: #808080, bg-subtle: #ccc),
+);
+*/
+//By making the $placeholder value true, this allows the creation of
+//placeholder color palette styles for cleanly using the @extend %name-palette
+//syntax instead of @extend .name-palette which tacks those styles onto every
+//instance of the palette used by any other element
+@mixin color($selector: false, $color-palettes: $color-palettes) {
+  @each $name, $palette in $color-palettes {
+    $fg: map-get($palette, "fg") !global;
+    $bg: map-get($palette, "bg") !global;
+    // TODO: create an equation to generate color variations if they don't exist
+    $fg-subtle: map-get($palette, "fg-subtle") !global;
+    $bg-subtle: map-get($palette, "bg-subtle") !global;
+    @if $selector == "placeholder" {
+      /*#{$name}-palette*/
+      $name: "%" + $name;
+      #{$name}-palette {
+        @content;
+      }
+    } @else if $selector == false { //without a defined selector
+      $name: "." + $name;
+      #{$name}-palette {
+        @content;
+      }
+    } @else { //if the selector is defined then apply the styles to it within each color palette
+      @at-root {
+        .#{$name}-palette #{$selector} {
+          @content;
+        }
+      }
+    }
+  }
+}
