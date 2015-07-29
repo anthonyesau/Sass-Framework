@@ -1,4 +1,4 @@
-#scss Framework
+#Sass Framework
 A set of components to frame a new website style around.
 
 ##1. Sliding Scale
@@ -10,7 +10,6 @@ Utilizes a series of incremental media queries to vary the relative sizes of typ
 - Unit agnostic (user defines the units)
 - Ranges for the scale to slide along may include two or more values
 - Fixed scale tools also included
--
 
 
 ###Fixed Scale Usage:
