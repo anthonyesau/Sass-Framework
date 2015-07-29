@@ -1,37 +1,20 @@
-/*
-
-Features:
-- ranges can be lists of two or more values
-- unit agnostic?
-- increments of scale vary by screen size (ratios change responsively)
-
-Usage:
-
-.exampleclass {
-  padding: es(3); //3rd increase on the exponentional scale(non-responsive)
-  @include scale() { //initiate responsive scale for the contained properties
-    margin: es(0); //base value from the exponential scale
-    line-height: ls(1.2 2); //linear interpolation of value
-    left: es(1) + 5rem; //add first increase of exponential scale to constant value
-  }
-}
-*/
+//Sliding scale through media queries
 
 //Define ranges for sliding variables (must be minimum to maximum)
-$type-base-range: 100% 131.25%; //
-$exponential-scale-range: 1.333 1.618;
-$screen-range: 20em 80em;
+$type-base-range: 100% 131.25% !default; //
+$exponential-scale-range: 1.333 1.618 !default;
+$screen-range: 20em 80em !default;
 
 //Define non-sliding variables
-$type-base: 16px;
-$exponential-scale: 1.618;
+$type-base: 131.25% !default;
+$exponential-scale: 1.618 !default;
 
 //Operational settings
-$increments: 5; //if unitless {number of steps (media queries) to calculate sliding changes}
+$increments: 5 !default; //if unitless {number of steps (media queries) to calculate sliding changes}
 //if units included {use distance for increments instead, must be same unit as screen-range}
 //TODO measurement base increments need to be ironed out (vary increments by screen-range distances)
-$adjust-root: true; //True{change root(html) font-size to base}//false{leave root font-size at default}
-$prefered-unit: 1rem; //
+$adjust-root: true !default; //True{change root(html) font-size to base}//false{leave root font-size at default}
+$prefered-unit: 1rem !default; //
 
 @if unitless($increments) == false {
   $increments: ceil( ( nth($screen-range, length($screen-range) ) - nth($screen-range, 1) ) / $increments );
