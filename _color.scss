@@ -1,21 +1,57 @@
 //Color palette generator
 //Requires a $color-palettes variable in this format:
-/*
+
+//TODO remove requirement for all color values to have a map value
 $color-palettes: (
+  primary: (fg: #333, bg: #f8f8f8, accent: #ba9f61, fg-subtle: #808080, bg-subtle: #e5e5e5),
   light: (fg: #333, bg: #f8f8f8, accent: #ba9f61, fg-subtle: #808080, bg-subtle: #e5e5e5),
   dark: (fg: #f8f8f8, bg: #333, accent: #ba9f61, fg-subtle: #ccc, bg-subtle: #808080 ),
   accent: (fg: #f8f8f8, bg: #ba9f61, accent: #333, fg-subtle: #808080, bg-subtle: #ccc),
 );
-*/
+
+//Searches high and low for a palette
+@function find-palette($palette) {
+  @if type-of($palette)=="list" or type-of($palette)=="map"{
+    @return $palette;
+  } @elseif map-has-key($color-palettes, $palette) {
+    @return  map-get($color-palettes, $palette);
+  } @elseif type-of($palette)=="number" {
+    @return  nth(map_values($color-palettes), $palette);
+  } @else {
+    @error "Palette does not exist: " + $palette;
+  }
+}
+
+//Defines and resets global temporary variables
+@mixin set-palette-default($palette: 1){
+  $palette-default: find-palette($palette) !global;
+}
+
+@mixin reset-palette-temp($palette: $palette-default){
+  $palette-temp: find-palette($palette) !global;
+}
+
+@include set-palette-default();
+
+@include reset-palette-temp();
+
+@function color($color, $palette: $palette-temp){
+  $palette: find-palette($palette);
+  @if type-of($color)=="number" {
+    @return nth($palette, $color);
+  } @else {
+    @return map-get($palette, $color);
+  }
+}
+
 //By making the $placeholder value true, this allows the creation of
 //placeholder color palette styles for cleanly using the @extend %name-palette
 //syntax instead of @extend .name-palette which tacks those styles onto every
 //instance of the palette used by any other element
-@mixin color($selector: false, $color-palettes: $color-palettes) {
+@mixin colorv1($selector: false, $color-palettes: $color-palettes) {
   @each $name, $palette in $color-palettes {
     $fg: map-get($palette, "fg") !global;
     $bg: map-get($palette, "bg") !global;
-    // TODO: create an equation to generate color variations if they don't exist
     $fg-subtle: map-get($palette, "fg-subtle") !global;
     $bg-subtle: map-get($palette, "bg-subtle") !global;
     @if $selector == "placeholder" {
@@ -37,4 +73,29 @@ $color-palettes: (
       }
     }
   }
+}
+
+
+@mixin color($palette: false) {
+  @if $palette == false {
+    @each $name, $palette in $color-palettes {
+      $name: "." + $name;
+      $selector: &;
+      $palette-temp: find-palette($palette) !global;
+      @at-root {
+        #{$name}-palette #{$selector} {
+          @content;
+        }
+      }
+    }
+  } @else {
+    $selector: &;
+    $palette-temp: find-palette($palette) !global;
+    @at-root {
+      #{$selector} {
+        @content;
+      }
+    }
+  }
+  @include reset-palette-temp();
 }

@@ -38,7 +38,7 @@ $prefered-unit: 1rem; //
 }
 
 //Defines and resets global temporary variables
-@mixin reset-temps{
+@mixin reset-scale-temps{
   $type-base-temp: $type-base !global;
   $exponential-scale-temp: $exponential-scale !global;
   $offset-temp: .5 !global; //NOTE unnecessary: sets linear scale offset to average the values
@@ -47,6 +47,16 @@ $prefered-unit: 1rem; //
 //exponential scale
 @function es($scale-exponent: 0, $base: $type-base-temp, $scale-base: $exponential-scale-temp) {
   @return $base * exponent($scale-base, $scale-exponent);
+}
+
+//TODO
+@function es-calc(){ //returns an equation for use in a calc() css property value
+  @return false;
+}
+
+//TODO
+@function ls-calc(){ //returns an equation for use in a calc() css property value
+  @return false;
 }
 
 $range-count: true; //NOTE necessary?
@@ -86,7 +96,7 @@ $offset-range: true; //NOTE necessary?
   $type-base-range: $prefered-unit;
   $type-base: $prefered-unit;
 }
-@include reset-temps;
+@include reset-scale-temps;
 
 @mixin scale {
   @for $i from - 1 through $increments {
@@ -109,5 +119,5 @@ $offset-range: true; //NOTE necessary?
       }
     }
   }
-  @include reset-temps;
+  @include reset-scale-temps;
 }
