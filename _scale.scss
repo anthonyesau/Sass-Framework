@@ -3,7 +3,7 @@
 //Define ranges for sliding variables (must be minimum to maximum)
 $type-base-range: 100% 131.25% !default; //
 $exponential-scale-range: 1.333 1.618 !default;
-$screen-range: 20em 80em !default;
+$screen-range: 20rem 80rem !default;
 
 //Define non-sliding variables
 $type-base: 131.25% !default;
@@ -67,29 +67,16 @@ $offset-range: true; //NOTE necessary?
   }
 }
 
-@if $adjust-root == true {
+
+@mixin scale {
   @for $i from 0 through $increments {
     $offset-temp: $i / $increments !global;
     $exponential-scale-temp: ls($exponential-scale-range, $offset-temp) !global;
     $type-base-temp: ls($type-base-range, $offset-temp) !global;
-    html {
-      font-size: $type-base-temp;
-    }
-  }
-  $type-base-range: $prefered-unit;
-  $type-base: $prefered-unit;
-}
-@include reset-scale-temps;
-
-@mixin scale {
-  @for $i from - 1 through $increments {
-    $offset-temp: $i / $increments !global;
-    $exponential-scale-temp: ls($exponential-scale-range, $offset-temp) !global;
-    $type-base-temp: ls($type-base-range, $offset-temp) !global;
     $transition1: ls($screen-range, $offset-temp);
-    $transition2: ls($screen-range, ($i + 1) / $increments);
-    @if $i == - 1 { //below minimum transition point
-      @media (max-width: $transition2) {
+    $transition2: ls($screen-range, ( $i + 1) / $increments);
+    @if $i == 0 { //below minimum transition point
+      @media (max-width: $transition1) {
         @content;
       }
     } @else if $i < $increments {
@@ -103,4 +90,16 @@ $offset-range: true; //NOTE necessary?
     }
   }
   @include reset-scale-temps;
+}
+
+@include reset-scale-temps;
+
+@if $adjust-root == true {
+  @include scale {
+    html {
+      font-size: $type-base-temp;
+    }
+  }
+  $type-base-range: $prefered-unit;
+  $type-base: $prefered-unit;
 }
