@@ -9,3 +9,18 @@
 @import 'scale';
 
 @import 'swatchbook';
+
+
+// Scale module tests
+// ------------------------------
+
+.testclass {
+  margin: 0;
+  padding: 0;
+  @include scale{
+    //padding: es(1);
+  };
+  @include scale-calc{
+    font-size: calc( #{es-calc(10)} );
+  }
+}
