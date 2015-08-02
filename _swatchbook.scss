@@ -3,9 +3,9 @@
 
 //TODO remove requirement for all color values to have a map value
 $color-palettes: (
-  primary: (fg: #333, bg: #f8f8f8, accent: #ba9f61, fg-subtle: #808080, bg-subtle: #e5e5e5),
   light: (fg: #333, bg: #f8f8f8, accent: #ba9f61, fg-subtle: #808080, bg-subtle: #e5e5e5),
   dark: (fg: #f8f8f8, bg: #333, accent: #ba9f61, fg-subtle: #ccc, bg-subtle: #808080 ),
+  medium: (fg: #f8f8f8, bg: #808080, accent: #ba9f61, fg-subtle: #ccc, bg-subtle: #ccc ),
   accent: (fg: #f8f8f8, bg: #ba9f61, accent: #333, fg-subtle: #808080, bg-subtle: #ccc),
 );
 
@@ -80,6 +80,17 @@ $color-palettes: (
   @if $palette == false {
     @each $name, $palette in $color-palettes {
       $name: "." + $name;
+      $selector: &;
+      $palette-temp: find-palette($palette) !global;
+      @at-root {
+        #{$name}-palette #{$selector} {
+          @content;
+        }
+      }
+    }
+  } @elseif $palette == placeholder {
+    @each $name, $palette in $color-palettes {
+      $name: "%" + $name;
       $selector: &;
       $palette-temp: find-palette($palette) !global;
       @at-root {
