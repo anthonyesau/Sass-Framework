@@ -1,9 +1,9 @@
 //Sliding scale through media queries
 
 //Define ranges for sliding variables (must be minimum to maximum)
-$type-base-range: 100% 131.25% !default; //
+$type-base-range: 100% 150% !default; //
 $exponential-scale-range: 1.333 1.618 !default;
-$screen-range: 20rem 80rem !default;
+$screen-range: 0rem 100rem !default;
 
 //Define non-sliding variables
 $type-base: 131.25% !default;
@@ -32,15 +32,6 @@ $prefered-unit: 1rem !default; //
   @return $base * exponent($scale-base, $scale-exponent);
 }
 
-//TODO
-@function es-calc(){ //returns an equation for use in a calc() css property value
-  @return false;
-}
-
-//TODO
-@function ls-calc(){ //returns an equation for use in a calc() css property value
-  @return false;
-}
 
 $range-count: true; //NOTE necessary?
 $offset-range: true; //NOTE necessary?
@@ -67,19 +58,21 @@ $offset-range: true; //NOTE necessary?
   }
 }
 
-
+//Be careful with counting points versus segments within the various ranges
+//That is the function of all the + and - 1s and 2s
 @mixin scale {
-  @for $i from 0 through $increments {
-    $offset-temp: $i / $increments !global;
+  $range-count: $increments - 2;
+  @for $i from -1 through $range-count {
+    $offset-temp: ( $i + 1 ) / ( $increments - 1 ) !global;
     $exponential-scale-temp: ls($exponential-scale-range, $offset-temp) !global;
-    $type-base-temp: ls($type-base-range, $offset-temp) !global;
-    $transition1: ls($screen-range, $offset-temp);
-    $transition2: ls($screen-range, ( $i + 1) / $increments);
-    @if $i == 0 { //below minimum transition point
-      @media (max-width: $transition1) {
+    $type-base-temp: ls($type-base-range, ( $i + 1 ) / ( $increments - 1 )) !global;
+    $transition1: ls($screen-range, $i / $range-count);
+    $transition2: ls($screen-range, ( $i + 1 ) / $range-count);
+    @if $i == -1 { //below minimum transition point
+      @media (max-width: $transition2) {
         @content;
       }
-    } @else if $i < $increments {
+    } @else if $i < $range-count {
       @media (min-width: $transition1) and (max-width: $transition2) {
         @content;
       }
@@ -93,6 +86,8 @@ $offset-range: true; //NOTE necessary?
 }
 
 @include reset-scale-temps;
+$type-base-range-archive: $type-base-range;
+$type-base-archive: $type-base;
 
 @if $adjust-root == true {
   @include scale {
