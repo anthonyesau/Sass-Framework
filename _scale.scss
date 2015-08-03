@@ -1,16 +1,19 @@
 //Sliding scale through media queries
 
 //Define ranges for sliding variables (must be minimum to maximum)
-$type-base-range: 100% 150% !default; //
+$type-base-range: 100% 131.25% !default; //
 $exponential-scale-range: 1.333 1.618 !default;
-$screen-range: 0rem 100rem !default;
+$screen-range: 30rem 80rem !default;
 
 //Define non-sliding variables
 $type-base: 131.25% !default;
 $exponential-scale: 1.618 !default;
 
 //Operational settings
-$increments: 5 !default; //if unitless {number of steps (media queries) to calculate sliding changes}
+$increments: 5 !default;
+//if unitless {number of steps (media queries) to calculate sliding changes}
+//This includes counting below the lowest number in the range as a step
+//as well as the highest number in the range  and above as a step
 //if units included {use distance for increments instead, must be same unit as screen-range}
 //TODO measurement base increments need to be ironed out (vary increments by screen-range distances)
 $adjust-root: true !default; //True{change root(html) font-size to base}//false{leave root font-size at default}
@@ -83,6 +86,29 @@ $offset-range: true; //NOTE necessary?
     }
   }
   @include reset-scale-temps;
+}
+
+//Be careful with counting points versus segments within the various ranges
+//That is the function of all the + and - 1s and 2s
+@function remConverter($rems) {
+  $range-count: $increments - 2;
+  @for $i from -1 through $range-count { //TODO make the test run from widest to most narrow screen size
+    $offset-temp: ( $i + 1 ) / ( $increments - 1 ) !global;
+    $exponential-scale-temp: ls($exponential-scale-range, $offset-temp) !global;
+    $type-base-temp: ls($type-base-range, ( $i + 1 ) / ( $increments - 1 )) !global;
+    $transition1: ls($screen-range, $i / $range-count);
+    $transition2: ls($screen-range, ( $i + 1 ) / $range-count);
+    $type-base1-temp: ls($type-base-range-archive, $i / ( $increments - 1 )) !global;
+    $type-base2-temp: ls($type-base-range-archive, ( $i + 1 ) / ( $increments - 1 )) !global;
+    $type-base: (($type-base2-temp - $type-base1-temp) / $increments * $i + $type-base1-temp);
+    $converted-transition1: ($transition2 - $transition1) / $increments * $i + $transition1;
+    $converted-transition2: ($transition2 - $transition1) / $increments * ($i + 1) + $transition1;
+    $convertedRems: $rems / 1rem * $type-base / 100% * 1rem;
+    @debug $type-base;
+    @if $convertedRems >= $transition1 and $convertedRems < $transition2 {
+      @return $convertedRems;
+    }
+  }
 }
 
 @include reset-scale-temps;
