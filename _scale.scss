@@ -1,4 +1,5 @@
 //Sliding scale through media queries
+//Requirements: _exponents.scss
 
 //Define ranges for sliding variables (must be minimum to maximum)
 $type-base-range: 100% 131.25% !default; //
@@ -90,6 +91,7 @@ $offset-range: true; //NOTE necessary?
 
 //Be careful with counting points versus segments within the various ranges
 //That is the function of all the + and - 1s and 2s
+//TODO include above and below screen range
 @function remConverter($rems) {
   $range-count: $increments - 2;
   @for $i from -1 through $range-count { //TODO make the test run from widest to most narrow screen size
