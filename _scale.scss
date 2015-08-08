@@ -3,7 +3,7 @@
 //Define ranges for sliding variables (must be minimum to maximum)
 $type-base-range: 100% 131.25% !default; //
 $exponential-scale-range: 1.333 1.618 !default;
-$screen-range: 30rem 80rem !default;
+$screen-range: 30rem 80rem !default; //Note that this unit references the initial document unit measurements
 
 //Define non-sliding variables
 $type-base: 131.25% !default;

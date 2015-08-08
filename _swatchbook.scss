@@ -11,11 +11,11 @@ $color-palettes: (
 
 //Searches high and low for a palette
 @function find-palette($palette) {
-  @if type-of($palette)=="list" or type-of($palette)=="map"{
+  @if type-of($palette) == "list" or type-of($palette) == "map"{
     @return $palette;
   } @elseif map-has-key($color-palettes, $palette) {
     @return  map-get($color-palettes, $palette);
-  } @elseif type-of($palette)=="number" {
+  } @elseif type-of($palette) == "number" {
     @return  nth(map_values($color-palettes), $palette);
   } @else {
     @error "Palette does not exist: " + $palette;
@@ -37,7 +37,7 @@ $color-palettes: (
 
 @function color($color, $palette: $palette-temp){
   $palette: find-palette($palette);
-  @if type-of($color)=="number" {
+  @if type-of($color) == "number" {
     @return nth($palette, $color);
   } @else {
     @return map-get($palette, $color);
@@ -54,7 +54,7 @@ $color-palettes: (
     $bg: map-get($palette, "bg") !global;
     $fg-subtle: map-get($palette, "fg-subtle") !global;
     $bg-subtle: map-get($palette, "bg-subtle") !global;
-    @if $selector == "placeholder" {
+    @if $selector == "placeholder" or $selector == "%" {
       /*#{$name}-palette*/
       $name: "%" + $name;
       #{$name}-palette {
