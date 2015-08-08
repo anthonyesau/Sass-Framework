@@ -1,13 +1,9 @@
-//Color palette manager
-//Requires a $color-palettes variable in this format:
+//Swatchbook color manager
 
 //TODO remove requirement for all color values to have a map value
 $color-palettes: (
-  light: (fg: #333, bg: #f8f8f8, accent: #ba9f61, fg-subtle: #808080, bg-subtle: #e5e5e5),
-  dark: (fg: #f8f8f8, bg: #333, accent: #ba9f61, fg-subtle: #ccc, bg-subtle: #808080 ),
-  medium: (fg: #f8f8f8, bg: #808080, accent: #ba9f61, fg-subtle: #ccc, bg-subtle: #ccc ),
-  accent: (fg: #f8f8f8, bg: #ba9f61, accent: #333, fg-subtle: #808080, bg-subtle: #ccc),
-);
+  light: (fg: #333, bg: #f8f8f8, accent: #ba9f61, fg-subtle: #808080, bg-subtle: #e5e5e5)
+) !default;
 
 //Searches high and low for a palette
 @function find-palette($palette) {
@@ -74,7 +70,6 @@ $color-palettes: (
     }
   }
 }
-
 
 @mixin color($palette: false) {
   @if $palette == false {
