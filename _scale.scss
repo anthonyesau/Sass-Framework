@@ -89,29 +89,49 @@ $offset-range: true; //NOTE necessary?
   @include reset-scale-temps;
 }
 
-//Be careful with counting points versus segments within the various ranges
-//That is the function of all the + and - 1s and 2s
-//TODO include above and below screen range
-@function remConverter($rems) {
-  $range-count: $increments - 2;
-  @for $i from -1 through $range-count { //TODO make the test run from widest to most narrow screen size
-    $offset-temp: ( $i + 1 ) / ( $increments - 1 ) !global;
-    $exponential-scale-temp: ls($exponential-scale-range, $offset-temp) !global;
-    $type-base-temp: ls($type-base-range, ( $i + 1 ) / ( $increments - 1 )) !global;
-    $transition1: ls($screen-range, $i / $range-count);
-    $transition2: ls($screen-range, ( $i + 1 ) / $range-count);
-    $type-base1-temp: ls($type-base-range-archive, $i / ( $increments - 1 )) !global;
-    $type-base2-temp: ls($type-base-range-archive, ( $i + 1 ) / ( $increments - 1 )) !global;
-    $type-base: (($type-base2-temp - $type-base1-temp) / $increments * $i + $type-base1-temp);
-    $converted-transition1: ($transition2 - $transition1) / $increments * $i + $transition1;
-    $converted-transition2: ($transition2 - $transition1) / $increments * ($i + 1) + $transition1;
-    $convertedRems: $rems / 1rem * $type-base / 100% * 1rem;
-    @debug $type-base;
-    @if $convertedRems >= $transition1 and $convertedRems < $transition2 {
-      @return $convertedRems;
+//Redefines unit values for use in media queries
+@function unitConvertor($units) {
+  $unit-label: $units * 0 + 1;
+
+  @if $unit-label == 1rem { //converts rems to the initial font-size
+    @if $adjust-root == false { //if root font-size is unchanged, return unaltered $units
+      @return $units;
     }
+    $range-count: $increments - 2;
+    @for $i from -1 through $range-count {
+      $offset-temp: ( $i + 1 ) / ( $increments - 1 );
+      $exponential-scale-temp: ls($exponential-scale-range, $offset-temp);
+      $type-base-temp: ls($type-base-range-archive, ( $i + 1 ) / ( $increments - 1 ));
+      $transition1: ls($screen-range, $i / $range-count);
+      $transition2: ls($screen-range, ( $i + 1 ) / $range-count);
+      $type-base-unit: $type-base-temp * 0 + 1; // finds the unit of $type-base
+      $convertedRems: 1;
+      @if $type-base-unit == 1% {
+        $convertedRems: $units * $type-base-temp / 100%;
+      } @else if $type-base-unit == (1px) {
+        $convertedRems: $units * $type-base-temp / 1rem;
+        @debug "$type-base and $screen-range must both be measured in pixels to convert rems to pixels.";
+      } @else if $type-base-unit == 1em or $type-base-unit == 1rem {
+        $convertedRems: $units * $type-base-temp / 1rem;
+      }
+
+      @debug $type-base-unit;
+      @if $convertedRems >= $transition1 and $convertedRems < $transition2 {
+        @return $convertedRems;
+      }
+      @if $convertedRems >= $transition2 and $i == $range-count {
+        @return $convertedRems;
+      }
+      @if $convertedRems <= $transition1 and $i == -1 {
+        @return $convertedRems;
+      }
+    }
+
+  } @else if $unit-label == 1px or $unit-label == 1em or $unit-label == 1% { //NOTE: what to do with percentages?
+    @return $units;
   }
 }
+
 
 @include reset-scale-temps;
 $type-base-range-archive: $type-base-range;

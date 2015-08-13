@@ -10,12 +10,12 @@ $breakpoints: (
 // Build classes to show or hide via media query
 // TODO use rem converter
 @each $label, $breakpoint in $breakpoints {
-  @media (min-width: $breakpoint) {
+  @media (min-width: unitConvertor($breakpoint)) {
     .hide#{$label} {
       display: none !important;
     }
   }
-  @media (max-width: $breakpoint) {
+  @media (max-width: unitConvertor($breakpoint)) {
     .show#{$label} {
       display: none !important;
     }
@@ -25,12 +25,12 @@ $breakpoints: (
 //TODO breakpoint argument can be a number or the label of a point defined in the breakpoints variable
 @mixin media-query ($operator, $breakpoint){ //create a "rem-based" media query
   @if $operator == '>' {
-    @media (min-width: remConverter($breakpoint)) {
+    @media (min-width: unitConvertor($breakpoint)) {
       @content;
     }
   }
   @if $operator == '<' {
-    @media (max-width: remConverter($breakpoint)) {
+    @media (max-width: unitConvertor($breakpoint)) {
       @content;
     }
   }
