@@ -24,14 +24,27 @@ $breakpoints: (
 
 //TODO breakpoint argument can be a number or the label of a point defined in the breakpoints variable
 @mixin media-query ($operator, $breakpoint){ //create a "rem-based" media query
-  @if $operator == '>' {
-    @media (min-width: unitConvertor($breakpoint)) {
-      @content;
+  $query-separator: "";
+  $media-query: null;
+  @if str-index($operator, '>') != null {//@if $operator == '>' {
+    @if $media-query != null {
+      $query-separator: ", "
     }
+    $media-query: $query-separator + "(min-width: #{unitConvertor($breakpoint)})";
   }
-  @if $operator == '<' {
-    @media (max-width: unitConvertor($breakpoint)) {
-      @content;
+  @if str-index($operator, '<') != null {//@if $operator == '<' {
+    @if $media-query != null {
+      $query-separator: ", "
     }
+    $media-query: $query-separator + "(max-width: #{unitConvertor($breakpoint)})";
+  }
+  @if str-index($operator, '=') != null {//@if $operator == '<' {
+    @if $media-query != null {
+      $query-separator: ", "
+    }
+    $media-query: $query-separator + "(width: #{unitConvertor($breakpoint)})";
+  }
+  @media #{$media-query} {
+    @content;
   }
 }
