@@ -8,7 +8,6 @@ $breakpoints: (
 ) !default;
 
 // Build classes to show or hide via media query
-// TODO use rem converter
 @each $label, $breakpoint in $breakpoints {
   @media (min-width: unitConvertor($breakpoint)) {
     .hide#{$label} {
@@ -22,23 +21,31 @@ $breakpoints: (
   }
 }
 
-//TODO breakpoint argument can be a number or the label of a point defined in the breakpoints variable
-@mixin media-query ($operator, $breakpoint){ //create a "rem-based" media query
+@mixin media-query ($operator, $breakpoint){
+  //NOTE is defining variables outside the if statement necessary?
   $query-separator: "";
   $media-query: null;
-  @if str-index($operator, '>') != null {//@if $operator == '>' {
+
+  //Detect if $breakpoint is not a measurement, then find if it in the $breakpoints list
+  @if map-has-key($breakpoints, $breakpoint) {
+    $breakpoint:  map-get($breakpoints, $breakpoint);
+  } @elseif type-of($breakpoint) == "number" and unitless($breakpoint) == true {
+    $breakpoint: nth(map_values($breakpoints), $breakpoint);
+  }
+
+  @if str-index($operator, '>') != null {
     @if $media-query != null {
       $query-separator: ", "
     }
     $media-query: $query-separator + "(min-width: #{unitConvertor($breakpoint)})";
   }
-  @if str-index($operator, '<') != null {//@if $operator == '<' {
+  @if str-index($operator, '<') != null {
     @if $media-query != null {
       $query-separator: ", "
     }
     $media-query: $query-separator + "(max-width: #{unitConvertor($breakpoint)})";
   }
-  @if str-index($operator, '=') != null {//@if $operator == '<' {
+  @if str-index($operator, '=') != null {
     @if $media-query != null {
       $query-separator: ", "
     }
