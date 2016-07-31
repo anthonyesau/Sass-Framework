@@ -1,3 +1,5 @@
+Deprecated. See [sass-tools](https://github.com/anthonyesau/sass-tools) for a refined system of tools for Sass.
+
 #Sass Framework
 A set of components to frame a new website style around.
 
